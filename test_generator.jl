@@ -7,8 +7,8 @@ rng = MersenneTwister(1234)
 
 m = 2
 
-for n in 2:2:30
-    for n_i in (n÷2):4:50
+for n in 2:2:10
+    for n_i in 26:-4:2
         instance = InstanceLoaders.random_instance_generator(n, m; 
             rng=rng, 
             n_i=[n_i for _ in 1:n],
