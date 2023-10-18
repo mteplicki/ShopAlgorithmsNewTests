@@ -45,7 +45,7 @@ function make_tests(instances_with_functions, timeout,  file)
                 ShopInstances.ShopError(instance, "Out of memory", algorithm=name)
             else
                 println("$(instance.name) instance solved with $name timeouted at$(time() - t0)")
-                ShopInstances.ShopError(instance, "Timeout at: $timeout", algorithm=name)
+                ShopInstances.ShopError(instance, "Timeout at: $(time() - t0)", algorithm=name)
             end
         end
         close(timer)
