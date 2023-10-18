@@ -40,12 +40,15 @@ function make_tests(instances_with_functions, timeout,  file)
             println("Solved $(instance.name) instance with $name")
             a
         catch e
-            if e isa OutOfMemoryError
+            if e.task.exception isa OutOfMemoryError
                 println("$(instance.name) instance solved with $name ran out of memory at $(time() - t0)")
                 ShopInstances.ShopError(instance, "Out of memory", algorithm=name)
-            else
+            elseif e.task.exception isa InterruptException
                 println("$(instance.name) instance solved with $name timeouted at$(time() - t0)")
                 ShopInstances.ShopError(instance, "Timeout at: $(time() - t0)", algorithm=name)
+            else
+                showerror(stdout, e, catch_backtrace())
+                ShopInstances.ShopError(instance, "Error: $(e.result)", algorithm=name)
             end
         end
         close(timer)

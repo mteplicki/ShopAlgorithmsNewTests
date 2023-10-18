@@ -2,9 +2,11 @@ using Distributed
 
 @everywhere include("test_maker.jl")
 
-timeout = 240
+timeout = 120
 
 instances = load_instances("testsTwoJobs")
+
+filter!(x->maximum(x.n_i) <= 90, instances)
 
 functions = get_functions("Shifting Bottleneck", "Shifting Bottleneck - DPC", "Two jobs job shop - geometric approach")
 
