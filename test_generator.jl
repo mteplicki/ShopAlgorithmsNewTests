@@ -22,27 +22,14 @@ m = 2
 
 n = 2
 
-# for n_i in 2:4:26
-#     for m in 2:4:26
-#         instance = InstanceLoaders.random_instance_generator(n, m; 
-#             rng=rng, 
-#             n_i=[n_i for _ in 1:n],
-#             machine_repetition=true,
-#             job_recirculation=true)
-#         open("tests.jl/testsTwoJobs/m$(m)n_i$n_i.txt", "w") do io
-#             write(io, InstanceLoaders.TaillardSpecification(instance))
-#         end
-#     end
-# end
-
-for n_i in 26:4:50
-    for m in 26:4:50
+for n_i in 10:4:130
+    for m in 2:4:n_i
         instance = InstanceLoaders.random_instance_generator(n, m; 
             rng=rng, 
             n_i=[n_i for _ in 1:n],
             machine_repetition=true,
             job_recirculation=true)
-        open("tests.jl/testsTwoJobs2/m$(m)n_i$n_i.txt", "w") do io
+        open("tests.jl/testsTwoJobs/m$(m)n_i$n_i.txt", "w") do io
             write(io, InstanceLoaders.TaillardSpecification(instance))
         end
     end
