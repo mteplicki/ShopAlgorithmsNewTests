@@ -1,6 +1,6 @@
 using ShopAlgorithms, ProgressMeter, Dates, DataFrames, CSV, Distributed, IterTools
 
-global functions::Dict{String, Function} = Dict(
+global const functions::Dict{String, Function} = Dict(
     "Algorithm2_TwoMachinesJobShop" => x->Algorithms.algorithm2_two_machines_job_shop(x; yielding=true),
     "Branch and Bound - DPC" => x->Algorithms.generate_active_schedules_dpc(x; yielding=true),
     "Branch and Bound - 1|r_j, pmtn|Lmax" => x->Algorithms.generate_active_schedules(x; bounding_algorithm=:pmtn, yielding=true),
@@ -15,7 +15,7 @@ get_functions(x...) = filter(f->f[1] in x, functions)
 
 function load_instances(folder)
     path = "tests.jl/" * folder
-    if folder == "testsFromBenchmark"
+    if folder == "testsFromBenchmarks"
         type = InstanceLoaders.StandardSpecification
     else
         type = InstanceLoaders.TaillardSpecification
