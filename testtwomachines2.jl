@@ -7,11 +7,11 @@ timeout = 720
 
 instances = load_instances("testsTwoMachines")
 
-functions = get_functions("Shifting Bottleneck", "Branch and Bound - Carlier", "Branch and Bound - 1|r_j|Lmax")
+functions = get_functions("Shifting Bottleneck", "Shifting Bottleneck - Carlier", "Branch and Bound - Carlier", "Branch and Bound - 1|r_j|Lmax")
 
 n = length(instances) * length(functions)
 
 instances_with_functions = mix_instances_with_functions(instances, functions)
 
-make_tests(instances_with_functions, timeout, "results/resultsTwoMachines/resultspeed.csv")
+make_tests(instances_with_functions, timeout, "results/resultsTwoMachines/resultspeed.csv"; garbage_collect = true)
 

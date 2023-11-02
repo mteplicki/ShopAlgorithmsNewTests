@@ -7,11 +7,11 @@ timeout = 720
 
 instances = load_instances("testsTwoMachinesN")
 
-functions = get_functions("Shifting Bottleneck", "Branch and Bound - Carlier", "Branch and Bound - 1|r_j|Lmax")
+functions = get_functions("Shifting Bottleneck", "Shifting Bottleneck - Carlier", "Branch and Bound - Carlier", "Branch and Bound - 1|r_j|Lmax", "Shifting Bottleneck - DPC with timeout 0.5 with depth 0", "Shifting Bottleneck - DPC with timeout 0.5 with depth 1", "Shifting Bottleneck - DPC with timeout 10.0 with depth 1", "Shifting Bottleneck - DPC with timeout 10.0 with depth 0")
 
 n = length(instances) * length(functions)
 
 instances_with_functions = mix_instances_with_functions(instances, functions)
 
-make_tests(instances_with_functions, timeout, "results/resultsTwoMachines/resultspeedN.csv")
+make_tests(instances_with_functions, timeout, "results/resultsTwoMachines/resultspeedN.csv"; garbage_collect = true)
 
