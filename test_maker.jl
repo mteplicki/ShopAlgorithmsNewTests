@@ -2,10 +2,12 @@ using ShopAlgorithms, ProgressMeter, Dates, DataFrames, CSV, Distributed, IterTo
 
 global const functions::Dict{String, Function} = Dict(
     "Algorithm2_TwoMachinesJobShop" => x->Algorithms.algorithm2_two_machines_job_shop(x; yielding=true),
-    "Branch and Bound - DPC" => x->Algorithms.generate_active_schedules_dpc(x; yielding=true),
-    "Branch and Bound - 1|r_j, pmtn|Lmax" => x->Algorithms.generate_active_schedules(x; bounding_algorithm=:pmtn, yielding=true),
+    "Branch and Bound - Carlier" => x->Algorithms.generate_active_schedules_carlier(x; yielding=true, with_priority_queue=true),
     "Branch and Bound - 1|r_j|Lmax" => x->Algorithms.generate_active_schedules(x; yielding=true),
-    "Shifting Bottleneck - DPC" => x->Algorithms.shiftingbottleneckdpc(x; yielding=true),
+    "Shifting Bottleneck - DPC" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true),
+    "Shifting Bottleneck - DPC with stack" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, with_priority_queue=true),
+    "Shifting Bottleneck - DPC with timeout 5.0" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=5.0),
+    "Shifting Bottleneck - DPC with timeout 30.0" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=30.0),
     "Shifting Bottleneck" => x->Algorithms.shiftingbottleneck(x; suppress_warnings=true, yielding=true),
     "Two jobs job shop - geometric approach" => x->Algorithms.two_jobs_job_shop(x; yielding=true),
     "Two machines job shop" => x->Algorithms.two_machines_job_shop(x; yielding=true)
@@ -40,6 +42,7 @@ function make_tests(instances_with_functions, timeout,  file)
             println("Solved $(instance.name) instance with $name")
             a
         catch e
+            GC.gc()
             if e.task.exception isa OutOfMemoryError
                 println("$(instance.name) instance solved with $name ran out of memory at $(time() - t0)")
                 ShopInstances.ShopError(instance, "Out of memory", algorithm=name)
