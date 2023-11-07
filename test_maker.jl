@@ -3,6 +3,7 @@ using ShopAlgorithms, ProgressMeter, Dates, DataFrames, CSV, Distributed, IterTo
 functions_dict = Dict(
     "Algorithm2_TwoMachinesJobShop" => x->Algorithms.algorithm2_two_machines_job_shop(x; yielding=true),
     "Branch and Bound - Carlier" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=true),
+    "Branch and Bound - Carlier with Stack" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false),
     "Branch and Bound - 1|r_j|Lmax" => x->Algorithms.branchandbound(x; yielding=true),
     "Shifting Bottleneck - DPC" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true),
     "Shifting Bottleneck - DPC with timeout 0.5 with depth 0" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=0.5, carlier_depth=0),
@@ -14,7 +15,13 @@ functions_dict = Dict(
     "Two jobs job shop - geometric approach" => x->Algorithms.two_jobs_job_shop(x; yielding=true)
 )
 
-get_functions(x...) = filter(f->f[1] in x, functions_dict)
+get_functions(x...) = begin 
+    if !(issubset(x, keys(functions_dict)))
+        println("Wrong function name")
+        return
+    end
+    filter(f->f[1] in x, functions_dict)
+end
 
 struct Ordering <: Base.Order.Ordering end
 

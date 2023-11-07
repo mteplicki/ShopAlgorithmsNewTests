@@ -3,9 +3,11 @@ using Distributed
 
 @everywhere include("test_maker.jl")
 
-timeout = 720
+timeout = 480
 
 instances = load_instances("testsTwoMachinesN")
+
+filter!(x -> !(x.n == 4 && maximum(x.n_i) > 20), instances)
 
 functions = get_functions("Algorithm2_TwoMachinesJobShop")
 

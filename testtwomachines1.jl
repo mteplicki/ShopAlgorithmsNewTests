@@ -3,7 +3,7 @@ using Distributed
 
 @everywhere include("test_maker.jl")
 
-timeout = 720
+timeout = 480
 
 instances = load_instances("testsTwoMachines")
 
