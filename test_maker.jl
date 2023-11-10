@@ -1,11 +1,15 @@
+include("analyse.jl")
+
 using ShopAlgorithms, ProgressMeter, Dates, DataFrames, CSV, Distributed, IterTools
 
 functions_dict = Dict(
     "Algorithm2_TwoMachinesJobShop" => x->Algorithms.algorithm2_two_machines_job_shop(x; yielding=true),
     "Branch and Bound - Carlier" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=true),
+    "Branch and Bound - Carlier with heuristic UB" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false, heuristic_ub=true),
     "Branch and Bound - Carlier with Stack" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false),
     "Branch and Bound - 1|r_j|Lmax" => x->Algorithms.branchandbound(x; yielding=true),
     "Shifting Bottleneck - DPC" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true),
+    "Shifting Bottleneck - DPC with stack" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, with_priority_queue=false),
     "Shifting Bottleneck - DPC with timeout 0.5 with depth 0" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=0.5, carlier_depth=0),
     "Shifting Bottleneck - DPC with timeout 0.5 with depth 1" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=0.5, carlier_depth=1),
     "Shifting Bottleneck - DPC with timeout 10.0 with depth 0" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=10.0, carlier_depth=0),
@@ -17,8 +21,7 @@ functions_dict = Dict(
 
 get_functions(x...) = begin 
     if !(issubset(x, keys(functions_dict)))
-        println("Wrong function name")
-        return
+        throw(ArgumentError("Wrong function name"))
     end
     filter(f->f[1] in x, functions_dict)
 end
@@ -41,7 +44,7 @@ end
 
 mix_instances_with_functions(instances, functions) = reduce(push!, (product(instances, functions) |> collect); init=[])
 
-function make_tests(instances_with_functions, timeout,  file; garbage_collect=false)
+function make_tests(instances_with_functions, timeout,  file; garbage_collect=false, compress=false)
     result_list = @showprogress 0.5 "Computing..." pmap(instances_with_functions) do instance_function
         instance, (name, func) = instance_function
         println("Solving $(instance.name) instance with $name")
@@ -77,6 +80,10 @@ function make_tests(instances_with_functions, timeout,  file; garbage_collect=fa
 
     dfs = DataFrame.(result_list)
     df = reduce(append!, dfs)
+
+    if compress
+        df = compress(df)
+    end
 
     CSV.write(file, df)
 end
