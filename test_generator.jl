@@ -54,14 +54,27 @@ n = 2
 #     end
 # end
 
-for n_i in 200:200:5000
+# for n_i in 200:200:2000
+#     for i in 1:5
+#         local m = n_i
+#         instance = InstanceLoaders.random_instance_generator(n, m; 
+#                 rng=rng, 
+#                 n_i=[n_i for _ in 1:n],
+#                 machine_repetition=true)
+#         open("tests.jl/testsTwoJobsM1/m$(m)n_i$(n_i)i$i.txt", "w") do io
+#             write(io, InstanceLoaders.TaillardSpecification(instance))
+#         end
+#     end
+# end
+
+for n_i in 10_000:10_000:100_000
     for i in 1:5
         local m = n_i
         instance = InstanceLoaders.random_instance_generator(n, m; 
                 rng=rng, 
                 n_i=[n_i for _ in 1:n],
                 machine_repetition=true)
-        open("tests.jl/testsTwoJobsM/m$(m)n_i$(n_i)i$i.txt", "w") do io
+        open("tests.jl/testsTwoJobsM2/m$(m)n_i$(n_i)i$i.txt", "w") do io
             write(io, InstanceLoaders.TaillardSpecification(instance))
         end
     end
