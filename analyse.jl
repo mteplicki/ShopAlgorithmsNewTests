@@ -1,5 +1,7 @@
 using DataFrames, CSV
 
+export load_df, save_df, group_by_solution, get_solutions, get_solutions_full, sort_solutions
+
 load_df(path) = DataFrame(CSV.File(path))
 
 save_df(df, path) = CSV.write(path, df)

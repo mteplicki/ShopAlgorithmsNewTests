@@ -1,11 +1,11 @@
-include("analyse.jl")
+include("compress.jl")
 
 using ShopAlgorithms, ProgressMeter, Dates, DataFrames, CSV, Distributed, IterTools
 
 functions_dict = Dict(
     "Algorithm2_TwoMachinesJobShop" => x->Algorithms.algorithm2_two_machines_job_shop(x; yielding=true),
     "Branch and Bound - Carlier" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=true),
-    "Branch and Bound - Carlier with heuristic UB" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false, heuristic_ub=true),
+    "Branch and Bound - Carlier with heuristic UB" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false, heuristic_UB=true),
     "Branch and Bound - Carlier with Stack" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false),
     "Branch and Bound - 1|r_j|Lmax" => x->Algorithms.branchandbound(x; yielding=true),
     "Shifting Bottleneck - DPC" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true),
@@ -82,7 +82,7 @@ function make_tests(instances_with_functions, timeout,  file; garbage_collect=fa
     df = reduce(append!, dfs)
 
     if compress
-        df = compress(df)
+        df = Analyser.compress(df)
     end
 
     CSV.write(file, df)
