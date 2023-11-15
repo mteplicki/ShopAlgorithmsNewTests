@@ -25,7 +25,7 @@ instances = load_instances("testsTwoJobsM1")
 
 functions = get_functions(
     "Branch and Bound - Carlier", 
-    "Branch and Bound - 1|r_j|Lmax")
+    "Branch and Bound - 1|R_j|Lmax")
 
 instances_with_functions = mix_instances_with_functions(instances, functions)
 

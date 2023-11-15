@@ -7,7 +7,7 @@ timeout = 480
 
 instances = load_instances("testsTwoMachines")
 
-functions = get_functions("Shifting Bottleneck", "Shifting Bottleneck - Carlier", "Branch and Bound - Carlier", "Branch and Bound - 1|r_j|Lmax")
+functions = get_functions("Shifting Bottleneck", "Shifting Bottleneck - Carlier", "Branch and Bound - Carlier", "Branch and Bound - 1|R_j|Lmax")
 
 n = length(instances) * length(functions)
 

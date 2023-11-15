@@ -2,12 +2,12 @@ include("compress.jl")
 
 using ShopAlgorithms, ProgressMeter, Dates, DataFrames, CSV, Distributed, IterTools
 
-functions_dict = Dict(
+const functions_dict = Dict(
     "Algorithm2_TwoMachinesJobShop" => x->Algorithms.algorithm2_two_machines_job_shop(x; yielding=true),
     "Branch and Bound - Carlier" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=true),
     "Branch and Bound - Carlier with heuristic UB" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false, heuristic_UB=true),
     "Branch and Bound - Carlier with Stack" => x->Algorithms.branchandbound_carlier(x; yielding=true, with_priority_queue=false),
-    "Branch and Bound - 1|r_j|Lmax" => x->Algorithms.branchandbound(x; yielding=true),
+    "Branch and Bound - 1|R_j|Lmax" => x->Algorithms.branchandbound(x; yielding=true),
     "Shifting Bottleneck - DPC" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true),
     "Shifting Bottleneck - DPC with stack" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, with_priority_queue=false),
     "Shifting Bottleneck - DPC with timeout 0.5 with depth 0" => x->Algorithms.shiftingbottleneckcarlier(x; yielding=true, carlier_timeout=0.5, carlier_depth=0),
@@ -19,12 +19,7 @@ functions_dict = Dict(
     "Two jobs job shop - geometric approach" => x->Algorithms.two_jobs_job_shop(x; yielding=true)
 )
 
-get_functions(x...) = begin 
-    if !(issubset(x, keys(functions_dict)))
-        throw(ArgumentError("Wrong function name"))
-    end
-    filter(f->f[1] in x, functions_dict)
-end
+get_functions(x...) = getindex.(Ref(functions_dict), x)
 
 struct Ordering <: Base.Order.Ordering end
 

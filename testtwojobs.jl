@@ -14,7 +14,7 @@ functions = get_functions(
     "Shifting Bottleneck - DPC with timeout 0.5 with depth 0", 
     "Shifting Bottleneck - DPC with timeout 0.5 with depth 1", 
     "Branch and Bound - Carlier", 
-    "Branch and Bound - 1|r_j|Lmax")
+    "Branch and Bound - 1|R_j|Lmax")
 
 instances_with_functions = mix_instances_with_functions(instances, functions)
 

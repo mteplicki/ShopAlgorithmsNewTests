@@ -8,7 +8,7 @@ const instances = load_instances("testsFromBenchmarks")
 
 filter!(x->!(x.n>=20 && x.n >= 15), instances)
 
-const functions = get_functions("Branch and Bound - 1|r_j|Lmax", "Branch and Bound - Carlier", "Branch and Bound - Carlier with heuristic UB")
+const functions = get_functions("Branch and Bound - 1|R_j|Lmax", "Branch and Bound - Carlier", "Branch and Bound - Carlier with heuristic UB")
 
 instances_with_functions = mix_instances_with_functions(instances, functions)
 
