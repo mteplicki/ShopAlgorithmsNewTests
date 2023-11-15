@@ -1,47 +1,45 @@
 include("utils.jl")
 
-function plot_two_machines_time(df::DataFrame, algorithm, tickx=2, tick0x=2, ticky=2, tick0y=2)
+function plot_two_jobs_time(df, algorithm, tickx=4, tick0x=2, ticky=4, tick0y=10)
     # calculate max n and max n_i
-    max_n = maximum(df[!,:n])
+    max_n = maximum(df[!,:m])
     max_n_i = maximum(df[!,:operation_maximum])
-    min_n = minimum(df[!,:n])
+    min_n = minimum(df[!,:m])
     min_n_i = minimum(df[!,:operation_maximum])
 
     dataframe = filter(row -> row[:algorithm] == algorithm, df)
-    sort!(dataframe, [:n, :operation_maximum])
     okDataframe = filter(row -> row[:status] == "OK", dataframe)
-    okDataframe = groupby(okDataframe, [:n, :operation_maximum])
+    okDataframe = groupby(okDataframe, [:m, :operation_maximum])
     okDataframe = combine(okDataframe, :timeSeconds => mean => :timeSecondsM)
 
     data = AbstractTrace[]
     push!(data, heatmap(
-        x = okDataframe[!,:n],
+        x = okDataframe[!,:m],
         y = okDataframe[!,:operation_maximum],
         z = okDataframe[!,:timeSecondsM],
         hoverongaps = false
     ))
 
     # get instances with errors
-    append!(data, error_traces(dataframe, tickx, ticky))
+    append!(data, error_traces(dataframe, tickx, ticky, :m, :operation_maximum; size = 10))
 
-    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i)
+    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel = "m", ylabel = "n_i")
     plot(data, layout)
 end
 
-function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm; kwargs...)
-    tickx  = 2
-    tick0x = 2
-    ticky  = 2
-    tick0y = 2
+function plot_two_jobs_solution(df, algorithm, accurate_algortihm; kwargs...)
+    tickx=4 
+    tick0x=2
+    ticky=4
+    tick0y=10
 
     # check if in kwargs there is a key "max_z"
     kwargs_dict = Dict(kwargs)
     
-
     # calculate max n and max n_i
-    max_n = maximum(df[!,:n])
+    max_n = maximum(df[!,:m])
     max_n_i = maximum(df[!,:operation_maximum])
-    min_n = minimum(df[!,:n])
+    min_n = minimum(df[!,:m])
     min_n_i = minimum(df[!,:operation_maximum])
 
     dataframe = filter(row -> row[:algorithm] == algorithm, df)
@@ -55,7 +53,7 @@ function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm
     joined_OK[!,:error] = (joined_OK[!,:objectiveValue] .- joined_OK[!,:objectiveValue_1] ) ./ joined_OK[!,:objectiveValue_1]
     
     # calculate mean approximation error_
-    joined_OK = combine(groupby(joined_OK, [:n, :operation_maximum]), :error => mean => :error)
+    joined_OK = combine(groupby(joined_OK, [:m, :operation_maximum]), :error => mean => :error)
 
     max_z = if haskey(kwargs_dict, :max_z)
         kwargs_dict[:max_z]
@@ -65,7 +63,7 @@ function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm
 
     data = AbstractTrace[]
     push!(data, heatmap(
-        x = joined_OK[!,:n],
+        x = joined_OK[!,:m],
         y = joined_OK[!,:operation_maximum],
         z = joined_OK[!,:error],
         hoverongaps = false,
@@ -74,9 +72,9 @@ function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm
     ))
 
     # get instances with errors
-    append!(data, error_traces(joined, tickx, ticky))
+    append!(data, error_traces(joined, tickx, ticky, :m, :operation_maximum; size = 10))
 
-    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i)
+    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel="m", ylabel="n_i")
     plot(data, layout)
 end
 
@@ -86,30 +84,31 @@ function main_two_machines()
     dir = "twomachines"
     mkpath(dir)
 
-    df = cd("../results/resultsTwoMachines") do
-        Analyser.load_df(["resultmemory.csv", "resultmemory2.csv", "resultspeed.csv"]) |> Analyser.compress
+    df = cd("../results/resultsTwoJobs") do
+        Analyser.load_df(["resultcompressed.csv"])
     end
     
-    cd("twomachines")
+    cd("twojobs")
 
     # get list of algorithms
     algorithms = unique(df[!,:algorithm])
     for algorithm in algorithms
-        plot = plot_two_machines_time(df, algorithm)
+        plot = plot_two_jobs_time(df, algorithm)
         algorithm_name = replace(algorithm, "|"=>",")
         PlotlyKaleido.savefig(plot, algorithm_name * "_time.png"; width = 1000, height = 800)
     end
 
     heuristics = [
-        "Shifting Bottleneck - DPC with timeout 10.0 with depth 0",
-        "Shifting Bottleneck - DPC with timeout 10.0 with depth 1",
+        # "Shifting Bottleneck - DPC with timeout 10.0 with depth 0",
+        # "Shifting Bottleneck - DPC with timeout 10.0 with depth 1",
         "Shifting Bottleneck - DPC with timeout 0.5 with depth 1",
         "Shifting Bottleneck - DPC with timeout 0.5 with depth 0",
-        "Shifting Bottleneck - Carlier"
+        "Shifting Bottleneck - Carlier",
+        "Shifting Bottleneck"
     ]
 
     for heuristic in heuristics
-        plot = plot_two_machines_solution(df, heuristic, "Branch and Bound - Carlier"; max_z=0.06)
+        plot = plot_two_jobs_solution(df, heuristic, "Branch and Bound - Carlier"; max_z=0.18)
         heuristic_name = replace(heuristic, "|"=>",")
         PlotlyKaleido.savefig(plot, heuristic_name * "_solution.png"; width = 1000, height = 800)
     end

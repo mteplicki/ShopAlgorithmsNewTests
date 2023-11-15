@@ -13,16 +13,15 @@ function plot_two_machinesN(df::DataFrame, algorithm, tickx=2, tick0x=2)
 
     # get instances with errors
     error_data = error_dataframe(df)
-    error_data = mean_time(error_data)
 
     data = AbstractTrace[]
     push!(data, scatter(
-        x = error_data[!,:n],
+        x = error_data[!,:operation_maximum],
         y = error_data[!,:timeSecondsM],
         mode = "markers",
         marker = attr(
             color = "red",
-            size = 10
+            size = 14
         )
     ))
 
@@ -32,12 +31,14 @@ function plot_two_machinesN(df::DataFrame, algorithm, tickx=2, tick0x=2)
     DataframeSplitted = [filter(row -> row[:n] == x, okDataframe) for x in 2:2:4]
     data1 = map(DataframeSplitted) do df1
         scatter(
-            x = df1[!,:n],
+            x = df1[!,:operation_maximum],
             y = df1[!,:timeSecondsM],
             mode = "lines+markers",
             x0 = tick0x,
             dx = tickx,
-            name = L"\huge{n = %$(first(df1[1,:n]))}"
+            name = L"\huge{n = %$(first(df1[1,:n]))}",
+            marker_size=10,
+            line_width=4
         )
     end
     append!(data, data1)
@@ -47,10 +48,17 @@ end
 function main_two_machines_time()
     PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
     cd("D:\\Studia\\sem7\\ShopAlgorithmsNewTests\\plotGenerator")
-    dir = "twomachinesN"
+    dir = "twomachines"
     mkpath(dir)
     df = Analyser.load_df("../results/resultsTwoMachines/resultmemoryN.csv") |> Analyser.compress
-    
+    cd("twomachines")
+    # get list of algorithms
+    algorithms = unique(df[!,:algorithm])
+    for algorithm in algorithms
+        plot = plot_two_machinesN(df, algorithm)
+        algorithm_name = replace(algorithm, "|"=>",")
+        PlotlyKaleido.savefig(plot, algorithm_name * "_timeN.png"; width = 1000, height = 800)
+    end
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

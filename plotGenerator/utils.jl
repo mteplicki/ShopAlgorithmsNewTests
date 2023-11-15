@@ -7,20 +7,19 @@ layout_two_machines_time(tickx, tick0x, min_x,max_x) = Layout(
             font = attr(
                 size = 18
             ),
-            text = L"\Huge{n}"
+            text = L"\Huge{n_i}"
         ),
         showgrid = true,
         tickmode = "linear",
         tick0 = tick0x,
         dtick = tickx,
-        range = [min_x - tickx/2, max_x + tickx/2],
     ),
     yaxis = attr(
         title = attr(
             font = attr(
                 size = 18
             ),
-            text = L"\Huge{t(s)}"
+            text = L"\Huge{t (S)}"
         ),
         showgrid = true
     ),
@@ -30,13 +29,13 @@ layout_two_machines_time(tickx, tick0x, min_x,max_x) = Layout(
     )
 )
 
-layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i) = Layout(
+layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel="n", ylabel="n_i") = Layout(
     xaxis = attr(
         title = attr(
             font = attr(
                 size = 18
             ),
-            text = L"\Huge{n}"
+            text = L"\Huge{%$(xlabel)}",
         ),
         showgrid = false,
         tickmode = "linear",
@@ -50,7 +49,7 @@ layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i
             font = attr(
                 size = 18
             ),
-            text = L"\Huge{n_i}"
+            text = L"\Huge{%$(ylabel)}"
         ),
         showgrid = false,
         tickmode = "linear",
@@ -65,37 +64,37 @@ layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i
     barmode = "overlay"
 )
 
-error_dataframe(dataframe::DataFrame) = combine(
-    groupby(dataframe, [:n, :operation_maximum]), 
-    :status => length => :status_count)
+error_dataframe(dataframe::DataFrame, x = :n, y = :operation_maximum) = combine(
+    groupby(filter(row -> row[:status] != "OK", dataframe), [x, y]), 
+    [:status => length => :status_count, :timeSeconds => mean => :timeSecondsM])
 
 
-function mean_time(dataframe::DataFrame)
+function mean_time(dataframe::DataFrame, x = :n, y = :operation_maximum)
     new_dataframe = filter(row -> row[:status] == "OK", dataframe)
-    new_dataframe = groupby(new_dataframe, [:n, :operation_maximum])
+    new_dataframe = groupby(new_dataframe, [x, y])
     new_dataframe = combine(new_dataframe, :timeSeconds => mean => :timeSecondsM)
     return new_dataframe
 end
 
-function error_traces(dataframe::DataFrame, tickx, ticky)
+function error_traces(dataframe::DataFrame, tickx, ticky, xaxes = :n, yaxes = :operation_maximum; solidity = 0.3, size = 25)
     data = AbstractTrace[]
-    errorDataframe = error_dataframe(dataframe)
+    errorDataframe = error_dataframe(dataframe, xaxes, yaxes)
 
     for row in eachrow(errorDataframe)
         if row[:status_count] > 0
             push!(data, bar(
-                x = [row[:n]],
+                x = [row[xaxes]],
                 y = [ticky],
-                base = [row[:operation_maximum] - ticky/2],
+                base = [row[yaxes] - ticky/2],
                 marker = attr(
                     pattern = attr(
                         shape = "x",
                         fgcolor = "red",
                         bgcolor = "rgba(0,0,0,0)",
-                        solidity = 0.3,
+                        solidity = solidity,
                         fgopacity = 0.85,
                         fillmode = "overlay",
-                        size=25
+                        size=size
                     )
                 ),
                 width = tickx,
