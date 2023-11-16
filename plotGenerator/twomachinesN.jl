@@ -42,7 +42,7 @@ function plot_two_machinesN(df::DataFrame, algorithm, tickx=2, tick0x=2)
         )
     end
     append!(data, data1)
-    plot(data, layout_two_machines_time(tickx, tick0x, min_n, max_n))
+    plot(data, layout_two_machines_time(tickx, tick0x, min_n_i, max_n_i))
 end
 
 function main_two_machines_time()
