@@ -110,7 +110,8 @@ function main_two_machines()
         "Shifting Bottleneck - DPC with timeout 10.0 with depth 1",
         "Shifting Bottleneck - DPC with timeout 0.5 with depth 1",
         "Shifting Bottleneck - DPC with timeout 0.5 with depth 0",
-        "Shifting Bottleneck - Carlier"
+        "Shifting Bottleneck - Carlier",
+        "Shifting Bottleneck"
     ]
 
     for heuristic in heuristics
