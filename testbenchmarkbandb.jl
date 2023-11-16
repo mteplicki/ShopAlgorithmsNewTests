@@ -4,12 +4,25 @@ using Distributed
 
 const timeout::Int = 4000
 
-const instances = load_instances("testsFromBenchmarks")
+# instances = load_instances("testsFromBenchmarks")
 
-filter!(x->!(x.n>=20 && x.n >= 15), instances)
+# filter!(x->(x.n<=15 && x.m <= 10), instances)
 
-const functions = get_functions("Branch and Bound - 1|R_j|Lmax", "Branch and Bound - Carlier", "Branch and Bound - Carlier with heuristic UB")
+# my_functions = get_functions("Branch and Bound - 1|R_j|Lmax", "Branch and Bound - Carlier")
 
-instances_with_functions = mix_instances_with_functions(instances, functions)
+# instances_with_functions = mix_instances_with_functions(instances, my_functions)
 
-make_tests(instances_with_functions, timeout, "results/resultsFromBenchmarks/resultbandb.csv"; garbage_collect=true)
+# make_tests(instances_with_functions, timeout, "results/resultsFromBenchmarks/resultbandb.csv"; garbage_collect=true)
+
+instances = load_instances("testsFromBenchmarks")
+
+filter!(x->(x.n<=15 && x.m <= 10), instances)
+
+my_functions = get_functions("Branch and Bound - Carlier with Stack")
+
+instances_with_functions = mix_instances_with_functions(instances, my_functions)
+
+make_tests(instances_with_functions, timeout, "results/resultsFromBenchmarks/resultbandb2.csv"; garbage_collect=true)
+
+
+

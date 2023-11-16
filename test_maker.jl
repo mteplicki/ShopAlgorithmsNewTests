@@ -19,7 +19,7 @@ const functions_dict = Dict(
     "Two jobs job shop - geometric approach" => x->Algorithms.two_jobs_job_shop(x; yielding=true)
 )
 
-get_functions(x...) = getindex.(Ref(functions_dict), x)
+get_functions(x...) = [(name, functions_dict[name]) for name in x]
 
 struct Ordering <: Base.Order.Ordering end
 
