@@ -19,7 +19,7 @@ function plot_two_jobs_time(df, algorithm, tickx=4, tick0x=2, ticky=4, tick0y=10
         z = okDataframe[!,:timeSecondsM],
         hoverongaps = false,
         colorbar = attr(
-            title = "\huge{t [s]"
+            title = "t [s]"
         )
     ))
 
@@ -72,9 +72,9 @@ function plot_two_jobs_solution(df, algorithm, accurate_algortihm; kwargs...)
         hoverongaps = false,
         zmin = 0,
         zmax = max_z,
-        colorbar = attr(
-            title = L"\delta_x"
-        )
+        # colorbar = attr(
+        #     title = L"\Huge{\delta_x}"
+        # )
     ))
 
     # get instances with errors
@@ -84,8 +84,7 @@ function plot_two_jobs_solution(df, algorithm, accurate_algortihm; kwargs...)
     plot(data, layout)
 end
 
-function main_two_machines()
-    PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
+function main_two_jobs()
     cd("D:\\Studia\\sem7\\ShopAlgorithmsNewTests\\plotGenerator")
     dir = "twomachines"
     mkpath(dir)
@@ -120,8 +119,10 @@ function main_two_machines()
     end
 end
 
+PlotlyKaleido.is_running() || PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
+
 if abspath(PROGRAM_FILE) == @__FILE__
-    main_two_machines()
+    main_two_jobs()
 end
 
 

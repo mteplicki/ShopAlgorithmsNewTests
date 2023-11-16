@@ -74,9 +74,9 @@ function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm
         hoverongaps = false,
         zmin = 0,
         zmax = max_z,
-        colorbar = attr(
-            title = L"\huge{\delta_x}"
-        )
+        # colorbar = attr(
+        #     title = L"\Huge{\delta_x}"
+        # )
     ))
 
     # get instances with errors
@@ -87,7 +87,6 @@ function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm
 end
 
 function main_two_machines()
-    PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
     cd("D:\\Studia\\sem7\\ShopAlgorithmsNewTests\\plotGenerator")
     dir = "twomachines"
     mkpath(dir)
@@ -120,6 +119,8 @@ function main_two_machines()
         PlotlyKaleido.savefig(plot, heuristic_name * "_solution.png"; width = 1000, height = 800)
     end
 end
+
+PlotlyKaleido.is_running() || PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
 
 if abspath(PROGRAM_FILE) == @__FILE__
     main_two_machines()

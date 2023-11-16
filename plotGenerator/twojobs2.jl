@@ -91,7 +91,7 @@ function plot_two_jobs2_solution(df::DataFrame, algorithms, accurate_algortihm, 
     plot(data, layout_two_machines_time(tickx, tick0x, min_n_i, max_n_i; dtickx = 400, ylabel = raw"\delta_x"))
 end
 
-function main_two_machines_time()
+function main_two_jobs_2()
     cd("D:\\Studia\\sem7\\ShopAlgorithmsNewTests\\plotGenerator")
     dir = "twojobs2"
     mkpath(dir)
@@ -119,7 +119,7 @@ function main_two_machines_time()
     @info "Plot saved"
 end
 
-function main_two_machines_M()
+function main_two_jobs_M()
     cd("D:\\Studia\\sem7\\ShopAlgorithmsNewTests\\plotGenerator")
     dir = "twojobsM"
     mkpath(dir)
@@ -150,8 +150,8 @@ end
 PlotlyKaleido.is_running() || PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    main_two_machines_time()
-    main_two_machines_M()
+    main_two_jobs_2()
+    main_two_jobs_2()
 end
 
 

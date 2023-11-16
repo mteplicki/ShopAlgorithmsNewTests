@@ -46,7 +46,6 @@ function plot_two_machinesN(df::DataFrame, algorithm, tickx=2, tick0x=2)
 end
 
 function main_two_machines_time()
-    PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
     cd("D:\\Studia\\sem7\\ShopAlgorithmsNewTests\\plotGenerator")
     dir = "twomachines"
     mkpath(dir)
@@ -60,6 +59,8 @@ function main_two_machines_time()
         PlotlyKaleido.savefig(plot, algorithm_name * "_timeN.png"; width = 1000, height = 800)
     end
 end
+
+PlotlyKaleido.is_running() || PlotlyKaleido.start(mathjax=true, plotly_version=v"2.27.1")
 
 if abspath(PROGRAM_FILE) == @__FILE__
     main_two_machines_time()
