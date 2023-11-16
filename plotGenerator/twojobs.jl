@@ -17,13 +17,16 @@ function plot_two_jobs_time(df, algorithm, tickx=4, tick0x=2, ticky=4, tick0y=10
         x = okDataframe[!,:m],
         y = okDataframe[!,:operation_maximum],
         z = okDataframe[!,:timeSecondsM],
-        hoverongaps = false
+        hoverongaps = false,
+        colorbar = attr(
+            title = "\huge{t [s]"
+        )
     ))
 
     # get instances with errors
     append!(data, error_traces(dataframe, tickx, ticky, :m, :operation_maximum; size = 10))
 
-    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel = "m", ylabel = "n_i")
+    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel = "m", ylabel = "n_i", dtickx = 8, dticky = 8)
     plot(data, layout)
 end
 
@@ -68,13 +71,16 @@ function plot_two_jobs_solution(df, algorithm, accurate_algortihm; kwargs...)
         z = joined_OK[!,:error],
         hoverongaps = false,
         zmin = 0,
-        zmax = max_z
+        zmax = max_z,
+        colorbar = attr(
+            title = L"\delta_x"
+        )
     ))
 
     # get instances with errors
     append!(data, error_traces(joined, tickx, ticky, :m, :operation_maximum; size = 10))
 
-    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel="m", ylabel="n_i")
+    layout = layout_two_machines(tickx, tick0x, ticky, tick0y, min_n, max_n, min_n_i, max_n_i; xlabel="m", ylabel="n_i", dtickx = 8, dticky = 8)
     plot(data, layout)
 end
 
@@ -108,7 +114,7 @@ function main_two_machines()
     ]
 
     for heuristic in heuristics
-        plot = plot_two_jobs_solution(df, heuristic, "Branch and Bound - Carlier"; max_z=0.18)
+        plot = plot_two_jobs_solution(df, heuristic, "Two jobs job shop - geometric approach"; max_z=0.12)
         heuristic_name = replace(heuristic, "|"=>",")
         PlotlyKaleido.savefig(plot, heuristic_name * "_solution.png"; width = 1000, height = 800)
     end

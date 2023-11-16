@@ -18,7 +18,10 @@ function plot_two_machines_time(df::DataFrame, algorithm, tickx=2, tick0x=2, tic
         x = okDataframe[!,:n],
         y = okDataframe[!,:operation_maximum],
         z = okDataframe[!,:timeSecondsM],
-        hoverongaps = false
+        hoverongaps = false,
+        colorbar = attr(
+            title = "t [s]"
+        )
     ))
 
     # get instances with errors
@@ -70,7 +73,10 @@ function plot_two_machines_solution(df::DataFrame, algorithm, accurate_algortihm
         z = joined_OK[!,:error],
         hoverongaps = false,
         zmin = 0,
-        zmax = max_z
+        zmax = max_z,
+        colorbar = attr(
+            title = L"\huge{\delta_x}"
+        )
     ))
 
     # get instances with errors
