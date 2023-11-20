@@ -4,14 +4,14 @@ using Distributed
 
 @everywhere include("test_maker.jl")
 
-const timeout::Int = 4000
+@everywhere const timeout::Int = 4000
 
-const instances = load_instances("testsFromBenchmarks")
+@everywhere const instances = load_instances("testsWithRecirculation")
 
-filter!(x->!(x.n>=20 && x.n >= 15), instances)
+@everywhere filter!(x->(x.n * maximum(x.n_i) <= 100), instances)
 
-const functions = get_functions("Branch and Bound - 1|R_j|Lmax", "Branch and Bound - Carlier", "Branch and Bound - Carlier with heuristic UB")
+@everywhere const functions = get_functions("Branch and Bound - 1|R_j|Lmax", "Branch and Bound - Carlier", "Branch and Bound - Carlier with Stack")
 
-instances_with_functions = mix_instances_with_functions(instances, functions)
+@everywhere instances_with_functions = mix_instances_with_functions(instances, functions)
 
 make_tests(instances_with_functions, timeout, "results/resultsRecirculation/resultbandb.csv")

@@ -14487,7 +14487,7 @@ testsTwoJobs/m90n_i86i5.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:25.64
 testsTwoJobs/m90n_i90i1.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:26.133,90,2,2.253343373010958e18,545,6241,4.9092739,690097320,"Dict{String, Any}()",OK,90
 testsTwoJobs/m90n_i90i2.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:27.32,90,2,1.9848010708724308e18,497,6724,5.373009,738785104,"Dict{String, Any}()",OK,90
 testsTwoJobs/m90n_i90i3.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:27.93,90,2,6.68348313812911e18,482,6400,5.1857086,705892720,"Dict{String, Any}()",OK,90
-testsTwoJobs/m90n_i90i4.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:30.68,90,2,2.0838190814492836e18,483,6015,5.0429963,659483704,"Dict{String, Any}()",OK,90
+testsTwoJobs/m90n_i90i4.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:30.68,90,2,2.0838190814492836e18,483,6015,5.042b9963,659483704,"Dict{String, Any}()",OK,90
 testsTwoJobs/m90n_i90i5.txt,Shifting Bottleneck - Carlier,2023-11-09T10:57:31.445,90,2,6.327548630671474e18,537,6560,5.3085482,713860080,"Dict{String, Any}()",OK,90
 testsTwoJobs/m2n_i10i1.txt,Two jobs job shop - geometric approach,2023-11-09T10:57:29.039,2,2,1.2783335991390077e19,58,0,8.07e-5,61744,"Dict{String, Any}()",OK,10
 testsTwoJobs/m2n_i10i2.txt,Two jobs job shop - geometric approach,2023-11-09T10:57:29.57,2,2,1.4528511640587778e19,67,0,0.0001011,63776,"Dict{String, Any}()",OK,10
