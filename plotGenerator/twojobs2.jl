@@ -1,7 +1,7 @@
 include("utils.jl")
 
 
-function plot_two_jobs2(df::DataFrame, algorithms, tickx=200, tick0x=200, dtkickx=400)
+function plot_two_jobs2(df::DataFrame, algorithms, tickx=200, tick0x=200, dtkickx=400; r_scale = false)
     # calculate max n and max n_i
     max_n_i = maximum(df[!,:operation_maximum])
     min_n_i = minimum(df[!,:operation_maximum])
@@ -15,7 +15,7 @@ function plot_two_jobs2(df::DataFrame, algorithms, tickx=200, tick0x=200, dtkick
 
     data = AbstractTrace[]
     push!(data, scatter(
-        x = errordatajoined[!,:operation_maximum],
+        x = r_scale ? errordatajoined[!,:operation_maximum] .^ 2 : errordatajoined[!,:operation_maximum],
         y = errordatajoined[!,:timeSecondsM_1],
         mode = "markers",
         marker = attr(
@@ -28,7 +28,7 @@ function plot_two_jobs2(df::DataFrame, algorithms, tickx=200, tick0x=200, dtkick
     DataframeSplitted = [filter(row -> row[:algorithm] == algorithm, okDataframe) for algorithm in algorithms]
     data1 = map(DataframeSplitted) do df1
         scatter(
-            x = df1[!,:operation_maximum],
+            x = r_scale ? df1[!,:operation_maximum] .^ 2 : df1[!,:operation_maximum],
             y = df1[!,:timeSecondsM],
             mode = "lines+markers",
             x0 = tick0x,
@@ -39,7 +39,13 @@ function plot_two_jobs2(df::DataFrame, algorithms, tickx=200, tick0x=200, dtkick
         )
     end
     append!(data, data1)
-    plot(data, layout_two_machines_time(tickx, tick0x, min_n_i, max_n_i; dtickx = dtkickx))
+    layout = if r_scale
+        values = unique(sort(okDataframe, :operation_maximum)[!,:operation_maximum] .^ 2)
+        layout_two_machines_time([values[1:3:7]; values[9:2:end]])
+    else
+        layout_two_machines_time(tickx, tick0x, min_n_i, max_n_i; dtickx = dtkickx, xlabel = r_scale ? "r" : "n_i")
+    end
+    plot(data, layout)
 end
 
 function plot_two_jobs2_solution(df::DataFrame, algorithms, accurate_algortihm, tickx=200, tick0x=200)
@@ -105,6 +111,8 @@ function main_two_jobs_2()
     plot = plot_two_jobs2(df, algorithms)
     @info "Plot created. Saving..."
     PlotlyKaleido.savefig(plot, "twojobs" * "_time2.png"; width = 1200, height = 800)
+    plot = plot_two_jobs2(df, algorithms;r_scale = true)
+    PlotlyKaleido.savefig(plot, "twojobs" * "_time2r.png"; width = 1200, height = 800)
     @info "Plot saved"
 
     heuristics = [

@@ -36,7 +36,7 @@ function plot_two_machinesN(df::DataFrame, algorithm, tickx=2, tick0x=2)
             mode = "lines+markers",
             x0 = tick0x,
             dx = tickx,
-            name = L"\huge{n = %$(first(df1[1,:n]))}",
+            name = L"\huge{k = %$(first(df1[1,:n]))}",
             marker_size=10,
             line_width=4
         )
