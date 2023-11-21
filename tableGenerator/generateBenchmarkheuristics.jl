@@ -9,9 +9,10 @@ include("utils.jl")
 
 using DataFrames, CSV, .Analyser, PrettyTables, Printf
 
-df = load_df(["results\\resultsFromBenchmarks\\resultbandb.csv", "results\\resultsFromBenchmarks\\resultbandb2.csv"]) |> compress
+df = load_df(["results\\resultsFromBenchmarks\\resultheuristics.csv"]) |> compress
 
-filter!(row -> row[:m] < 15, df)
+
+
 
 df[!,:objectiveValue] = [if x == "OK" y else "--" end for (x,y) in zip(df[!,:status], df[!,:objectiveValue])]
 
@@ -25,29 +26,38 @@ df[!, :algorithm] = [algorithms_short_names[x] for x in df[!,:algorithm]]
 
 df[!,:name] = String.([split(x, "/")[2] |>  a->split(a,".")[1] for x in df[!,:name]])
 
+filter!(row -> all(row[:name] .!= ["abz8", "abz9"]), df)
+
 df[!,:lp] = [instance_order[x] for x in df[!,:name]]
 
 split_df_by_name = [(algorithm, filter(row -> row[:algorithm] == algorithm, df)) for algorithm in unique(df[!,:algorithm])]
 
 
 
-instances = df[!,[:lp, :n, :m, :objectiveValue]] |> unique
+instances = df[!,[:lp, :n, :m]] |> unique
+
+instances[!, :Optimum] = [optimum[x] for x in instances[!,:lp]]
+
+
 
 for (algorithm, df) in split_df_by_name
-    df = df[!,[:lp, :timeSeconds, :microruns]]
+    df = df[!,[:lp, :timeSeconds, :objectiveValue]]
     df[!, :timeSeconds] = [if x isa AbstractFloat @sprintf("%.2f", x) else x end for x in df[!,:timeSeconds]]
-    println(instances)
-    println(df)
+    rename!(df, :timeSeconds => Symbol("t [S]"))
+    rename!(df, :objectiveValue => Symbol("Cmax"))
+    @show instances
+    @show df
     instances = innerjoin(instances, df, on = [:lp], renamecols = identity => "_$algorithm")
 end
 
-
 sort!(instances, :lp)
 
+@show instances
 
 
-open(raw"D:\Studia\sem7\ShopAlgorithmsNewTests\tableGenerator\benchmarkbnb.txt", "w") do io
-    pretty_table(io, instances; backend=Val(:latex), wrap_table=true, label="fig:benchmark:bnb")
+
+open(raw"D:\Studia\sem7\ShopAlgorithmsNewTests\tableGenerator\benchmarkheuristics.txt", "w") do io
+    pretty_table(io, instances; backend=Val(:latex), wrap_table=true, label="fig:benchmark:heuristics")
 end
 
 
