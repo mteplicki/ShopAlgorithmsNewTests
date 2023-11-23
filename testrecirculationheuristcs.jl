@@ -11,4 +11,4 @@ using Distributed
 
 @everywhere instances_with_functions = mix_instances_with_functions(instances, functions)
 
-make_tests(instances_with_functions, timeout, "results/resultsRecirculation/result_dpc.csv")
+make_tests(instances_with_functions, timeout, "results/resultsRecirculation/result_dpc.csv"; garbage_collect=true)
